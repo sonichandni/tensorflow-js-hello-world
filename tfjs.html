@@ -1,0 +1,51 @@
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.11.2"></script>
+    <style>
+        body {
+            background-color: burlywood;
+        }
+        .main-div {
+            display: flex;
+            align-items: center;
+            background-color: black;
+            height: 50%;
+            width: 50%;
+            margin-inline: auto;
+        }
+        p {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h3 style="text-align: center;"> When x is 1 y is 2, when x is 2 y is 4 when x is 3 y is 5 and so on... </h3>
+    </div>
+    <div class="main-div">
+        Enter X : <input type="number" id="x_val" placeholder="Enter X value">
+        <button type="button" onclick="GetYVal();">Get Y value</button><br><br>
+        &nbsp; &nbsp; <p>Y is </p> &nbsp; &nbsp;<p id="output"> </p>
+    </div>
+</body>
+<script>
+    async function GetYVal(){
+        let x_val = document.getElementById('x_val').value;
+        const model = tf.sequential();
+
+        model.add(tf.layers.dense({units: 1, inputShape: [1]}));
+
+        model.compile({
+            loss: 'meanSquaredError',
+            optimizer: 'sgd'
+        });
+
+        const xs = tf.tensor2d([1, 2, 3, 4, 5, 6], [6, 1]);
+        const ys = tf.tensor2d([3, 4, 5, 6, 7, 8], [6, 1]);
+
+        await model.fit(xs, ys, {epochs: 500});
+
+        document.getElementById('output').innerText = model.predict(tf.tensor2d([x_val], [1, 1]));
+    }
+</script>
+<html>
